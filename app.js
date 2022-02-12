@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var { MongoClient } = require('mongodb');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -27,6 +28,23 @@ const server = http.createServer((req, res) => {
   res.end('Hello World');
 });
 
+// DB Configuration
+const uri = `mongodb://${hostname}:27017`;
+const dbName = 'test_hospital';
+const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+
+client.connect((error, client) => {
+  if (error) {
+    return console.log('Connection Failed');
+  }
+
+  console.log('Connected Successfully');
+  const db = client.db(dbName);
+})
+
 server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
@@ -36,6 +54,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+app.use('/posts', () => {
+  console.log('this is middleware running');
+})
+
+app.get('/posts', function(req, res) {
+  res.send('This is post page');
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
