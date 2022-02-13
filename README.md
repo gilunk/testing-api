@@ -1,4 +1,4 @@
-# Customer Queue Management System by Gilang Pangestu
+# (Prieds Test) Customer Queue Management System by Gilang Pangestu
 
 A backend application to be used in Hospital for walk-in-customer. Made with NodeJs and MongoDB
 
