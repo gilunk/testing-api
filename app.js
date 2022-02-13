@@ -218,6 +218,82 @@ app.post(
   }
 });
 
+app.put(
+  '/visitors/:id', 
+  body('name').isString(), 
+  body('email').isEmail(), 
+  body('phone_number').isLength({ max: 15 }).isNumeric(), 
+  function(req, res, next) {
+  try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      res.status(422).json({
+        status: false,
+        message: 'Invalid given data',
+        errors: errors.array(),
+      })
+    }
+
+    const db = client.db(dbName);
+    db.collection('visitors').findOneAndUpdate(
+    {
+      _id: ObjectId(req.params.id)
+    },
+    { $set: 
+      {
+        name: req.body.name,
+        email: req.body.email,
+        phone_number: req.body.phone_number,
+        updated_at: getDateNow(),
+      }
+    }).then((result) => {
+      console.log(result);
+      res.status(204).json({
+        status: true,
+        message: 'Berhasil update data pengunjung',
+        data: result
+      });
+    }).catch((error) => {
+      res.status(422).json({
+        status: false,
+        message: error
+      });
+    });
+  } catch (error) {
+    res.status(422).json({
+      status: false,
+      message: error
+    });
+  }
+});
+
+app.delete('/visitors/:id', function(req, res, next) {
+  try { 
+    const db = client.db(dbName);
+    db.collection('visitors').deleteOne({
+      _id: ObjectId(req.params.id)
+    }).then((result) => {
+      console.log(result);
+      res.status(204).json({
+        status: true,
+        message: 'Berhasil hapus data pengunjung',
+        data: []
+      });
+    }).catch((error) => {
+      res.status(422).json({
+        status: false,
+        message: error
+      });
+    });
+  } catch (error) {
+    res.status(422).json({
+      status: false,
+      message: error
+    });
+  }
+});
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
