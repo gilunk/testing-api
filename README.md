@@ -14,7 +14,7 @@ Open the postman documentation on this link : https://documenter.getpostman.com/
 After that, clone this repository by typing this command on GitBash :
 
 ```
-git clone git@github.com:gilunk/testing-api.git
+git clone https://github.com/gilunk/testing-api.git
 ```
 
 ## How to Setup
